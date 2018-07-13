@@ -39,7 +39,12 @@ const diffs = []
 scenarios.reduce(async (promise, scenarioPath) => {
   await promise
   const fixtureName = scenarioPath.replace(/(^scenarios\/|\/record\.js$)/g, '')
-  const [domain, title] = fixtureName.split('/')
+  var [domain, title] = fixtureName.split('/')
+
+  if (domain != 'api.github.com') {
+    domain += "/api/v3";
+  }
+
   console.log('')
   console.log(`⏯️  ${chalk.bold(domain)}: ${humanize(title.replace('.js', ''))} ...`)
 
