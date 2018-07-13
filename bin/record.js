@@ -41,8 +41,8 @@ scenarios.reduce(async (promise, scenarioPath) => {
   const fixtureName = scenarioPath.replace(/(^scenarios\/|\/record\.js$)/g, '')
   var [domain, title] = fixtureName.split('/')
 
-  if (domain != 'api.github.com') {
-    domain += "/api/v3";
+  if (domain !== 'api.github.com') {
+    domain += '/api/v3'
   }
 
   console.log('')
