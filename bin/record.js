@@ -24,11 +24,13 @@ const notifyAboutFixturesChanges = require('../lib/notify-about-fixtures-changes
 const read = require('../lib/read')
 const recordScenario = require('../lib/record-scenario')
 const write = require('../lib/write')
+const writeApiResponses = require('../lib/write-api-responses')
 
 const argv = require('minimist')(process.argv.slice(2), {
-  boolean: ['update', 'test-cached']
+  boolean: ['update', 'api', 'test-cached']
 })
 const doUpdate = argv.update
+const writeResponses = argv.api
 const selectedScenarios = argv._
 const hasSelectedScenarios = selectedScenarios.length > 0
 
@@ -99,6 +101,20 @@ scenarios.reduce(async (promise, scenarioPath) => {
     .map(cloneDeep)
     .filter(hasntIgnoreHeader)
     .map(normalize.bind(null, scenarioState)))
+
+  if (writeResponses) {
+    newRawFixtures.forEach(function(element) {
+      var method = element.method
+      var fpath = element.path
+      var response = element.response
+      fpath = fpath.replace(/api\/v3\//g, '')
+      fpath = fpath.replace(new RegExp(/\//g), '-');
+      var filename = method + fpath + '.json'
+      if(response) {
+        writeApiResponses(fixtureName, filename, response)
+      }
+    });
+  }
 
   const fixturesDiffs = diff(newNormalizedFixtures, oldNormalizedFixtures)
   if (!fixturesDiffs) {
